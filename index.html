@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        textarea {
+            padding: 10px;
+            margin: 10px 0;
+            width: 300px;
+            height: 100px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: block;
+            margin: 10px auto;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #qrCodeContainer {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        .qrCodeItem {
+            text-align: center;
+        }
+        .qrCodeItem img {
+            max-width: 150px;
+        }
+        .qrCodeItem p {
+            margin: 5px 0;
+            word-break: break-all;
+            max-width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>QR Code Generator</h1>
+        <textarea id="userInput" placeholder="Enter links (one per line)" required></textarea>
+        <button onclick="generateQRCodes()">Generate QR Codes</button>
+        <div id="qrCodeContainer"></div>
+    </div>
+
+    <script>
+        function generateQRCodes() {
+            const userInput = document.getElementById('userInput').value;
+            const links = userInput.split('\n').map(link => link.trim()).filter(link => link !== '');
+            const qrCodeContainer = document.getElementById('qrCodeContainer');
+            
+            if (links.length === 0) {
+                alert('Please enter at least one valid link');
+                return;
+            }
+
+            qrCodeContainer.innerHTML = '';
+
+            links.forEach(link => {
+                const apiUrl = `https://api.excelapi.org/other/qrcode?text=${encodeURIComponent(link)}`;
+                const qrCodeItem = document.createElement('div');
+                qrCodeItem.className = 'qrCodeItem';
+                qrCodeItem.innerHTML = `<img src="${apiUrl}" alt="QR Code"><p>${link}</p>`;
+                qrCodeContainer.appendChild(qrCodeItem);
+            });
+        }
+    </script>
+</body>
+</html>
