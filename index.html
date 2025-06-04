@@ -95,7 +95,7 @@
             qrCodeContainer.innerHTML = '';
 
             links.forEach(link => {
-                const apiUrl = `https://api.excelapi.org/other/qrcode?text=${encodeURIComponent(link)}`;
+                const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(link)}`;
                 const qrCodeItem = document.createElement('div');
                 qrCodeItem.className = 'qrCodeItem';
                 qrCodeItem.innerHTML = `<img src="${apiUrl}" alt="QR Code"><p>${link}</p>`;
