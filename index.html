@@ -109,7 +109,7 @@
             <option value="900x900">900x900</option>
             <option value="other">Other</option>
         </select>
-        <input type="number" id="customSizeInput" placeholder="Enter custom size (e.g., 456)" min="1">
+        <input type="number" id="customSizeInput" placeholder="Enter custom size (e.g., 456)" min="1" max="1000">
         <button onclick="generateQRCodes()">Generate QR Codes</button>
         <div id="qrCodeContainer"></div>
     </div>
@@ -136,8 +136,8 @@
             let size = sizeSelect;
             if (sizeSelect === 'other') {
                 const customSize = parseInt(customSizeInput);
-                if (isNaN(customSize) || customSize <= 0) {
-                    alert('Please enter a valid custom size');
+                if (isNaN(customSize) || customSize < 1 || customSize > 1000) {
+                    alert('Please enter a valid custom size between 1 and 1000');
                     return;
                 }
                 size = `${customSize}x${customSize}`;
