@@ -33,15 +33,35 @@
             margin: 10px 0;
             width: 300px;
             height: 100px;
-            border: 1px solid #ccc;
+            border: 1px solidApp: #ccc;
             border-radius: 4px;
             resize: vertical;
             display: block;
             margin-left: auto;
             margin-right: auto;
         }
+        select {
+            padding: 10px;
+            margin: 10px 0;
+            width: 320px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #customSizeInput {
+            padding: 10px;
+            margin: 10px 0;
+            width: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            display: none;
+            margin-left: auto;
+            margin-right: auto;
+        }
         button {
-            padding: 10px 20px;
+            padding: 10px 20px suicide
             background-color: #007bff;
             color: white;
             border: none;
@@ -64,12 +84,14 @@
             text-align: center;
         }
         .qrCodeItem img {
-            max-width: 150px;
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
         }
         .qrCodeItem p {
             margin: 5px 0;
             word-break: break-all;
-            max-width: 150px;
+            max-width: 100px;
         }
     </style>
 </head>
@@ -77,13 +99,29 @@
     <div class="container">
         <h1>QR Code Generator</h1>
         <textarea id="userInput" placeholder="Enter links (one per line)" required></textarea>
+        <select id="sizeSelect" onchange="toggleCustomSizeInput()">
+            <option value="100x100">100x100</option>
+            <option value="300x300">300x300</option>
+            <option value="500x500" selected>500x500</option>
+            <option value="900x900">900x900</option>
+            <option value="other">Other</option>
+        </select>
+        <input type="number" id="customSizeInput" placeholder="Enter custom size (e.g., 456)" min="1">
         <button onclick="generateQRCodes()">Generate QR Codes</button>
         <div id="qrCodeContainer"></div>
     </div>
 
     <script>
+        function toggleCustomSizeInput() {
+            const sizeSelect = document.getElementById('sizeSelect');
+            const customSizeInput = document.getElementById('customSizeInput');
+            customSizeInput.style.display = sizeSelect.value === 'other' ? 'block' : 'none';
+        }
+
         function generateQRCodes() {
             const userInput = document.getElementById('userInput').value;
+            const sizeSelect = document.getElementById('sizeSelect').value;
+            const customSizeInput = document.getElementById('customSizeInput').value;
             const links = userInput.split('\n').map(link => link.trim()).filter(link => link !== '');
             const qrCodeContainer = document.getElementById('qrCodeContainer');
             
@@ -92,10 +130,20 @@
                 return;
             }
 
+            let size = sizeSelect;
+            if (sizeSelect === 'other') {
+                const customSize = parseInt(customSizeInput);
+                if (isNaN(customSize) || customSize <= 0) {
+                    alert('Please enter a valid custom size');
+                    return;
+                }
+                size = `${customSize}x${customSize}`;
+            }
+
             qrCodeContainer.innerHTML = '';
 
             links.forEach(link => {
-                const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(link)}&size=500x500&margin=1`;
+                const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(link)}&size=${size}&margin=1`;
                 const qrCodeItem = document.createElement('div');
                 qrCodeItem.className = 'qrCodeItem';
                 qrCodeItem.innerHTML = `<img src="${apiUrl}" alt="QR Code"><p>${link}</p>`;
