@@ -90,12 +90,18 @@
             word-break: break-all;
             max-width: 100px;
         }
+        .size-label {
+            margin: 10px 0 5px 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>QR Code Generator</h1>
         <textarea id="userInput" placeholder="Enter links (one per line)" required></textarea>
+        <div class="size-label">Size</div>
         <select id="sizeSelect" onchange="toggleCustomSizeInput()">
             <option value="100x100">100x100</option>
             <option value="300x300">300x300</option>
