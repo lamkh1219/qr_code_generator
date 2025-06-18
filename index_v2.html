@@ -332,7 +332,17 @@
             min-width: 80px;
             font-weight: 600;
             color: var(--primary);
-            white-space: nowrap; /* Added to prevent line breaks */
+            display: flex;
+            flex-direction: column;
+            line-height: 1.2;
+        }
+        
+        .size-label {
+            font-size: 0.8rem;
+        }
+        
+        .size-number {
+            font-size: 1rem;
         }
         
         .loading {
@@ -414,7 +424,10 @@
                 <label for="size-input">QR Code Size (100-1000px)</label>
                 <div class="size-controls">
                     <input type="range" id="size-input" min="100" max="1000" value="300">
-                    <div class="size-value">Size: <span id="size-value">300</span>px</div>
+                    <div class="size-value">
+                        <span class="size-label">Size:</span>
+                        <span class="size-number" id="size-value">300px</span>
+                    </div>
                 </div>
                 <div class="size-info">
                     <i class="fas fa-info-circle"></i>
@@ -488,16 +501,16 @@
         document.addEventListener('DOMContentLoaded', function() {
             const urlInput = document.getElementById('url-input');
             const sizeInput = document.getElementById('size-input');
-            const sizeValue = document.getElementById('size-value');
+            const sizeValueElement = document.getElementById('size-value');
             const generateBtn = document.getElementById('generate-btn');
             const downloadBtn = document.getElementById('download-btn');
             const qrcodeDiv = document.getElementById('qrcode');
             const loading = document.getElementById('loading');
             
             // Update size display
-            sizeValue.textContent = sizeInput.value;
+            sizeValueElement.textContent = sizeInput.value + 'px';
             sizeInput.addEventListener('input', function() {
-                sizeValue.textContent = this.value;
+                sizeValueElement.textContent = this.value + 'px';
             });
             
             // Generate QR code
