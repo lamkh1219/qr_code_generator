@@ -14,8 +14,25 @@
     <link rel="manifest" href="https://lamkh1219.github.io/qr_code_generator/images/favicon/site.webmanifest" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --success-dark: #059669;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --gray-light: #e2e8f0;
+            --white: #ffffff;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
 
         * {
             box-sizing: border-box;
@@ -31,110 +48,209 @@
             justify-content: center;
             min-height: 100vh;
             background: linear-gradient(135deg, #4f46e5 0%, #a855f7 100%);
-            color: #1f2937;
+            color: var(--dark);
             overscroll-behavior: none;
             -webkit-tap-highlight-color: transparent;
             padding: 20px;
+            line-height: 1.6;
         }
 
         .container {
             text-align: center;
-            padding: 1.25rem;
-            background-color: rgba(255, 255, 255, 0.97);
-            border-radius: 1rem;
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+            padding: 2rem;
+            background-color: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
             width: 90vw;
-            max-width: 400px;
+            max-width: 480px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .header {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .header i {
+            font-size: 1.8rem;
+            color: var(--primary);
         }
 
         h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-            color: #1e40af;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .input-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.5rem;
             font-weight: 600;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+
+        .input-label i {
+            color: var(--primary);
+            font-size: 1rem;
         }
 
         textarea {
-            padding: 0.75rem;
+            padding: 1rem;
             margin: 0.5rem 0;
             width: 100%;
-            height: 90px;
-            border: 2px solid #e5e7eb;
-            border-radius: 0.5rem;
+            height: 120px;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius);
             resize: vertical;
             font-size: 0.95rem;
-            line-height: 1.4;
-            transition: border-color 0.2s ease;
+            line-height: 1.5;
+            transition: var(--transition);
+            background-color: var(--light);
+            font-family: inherit;
         }
 
         textarea:focus {
-            border-color: #4f46e5;
+            border-color: var(--primary);
             outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
-        .size-label {
-            margin: 0.5rem 0;
-            font-size: 0.95rem;
+        .options-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .option-card {
+            background: var(--light);
+            border-radius: var(--radius);
+            padding: 1rem;
+            text-align: left;
+            border: 2px solid var(--gray-light);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .option-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .option-card.active {
+            border-color: var(--primary);
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+
+        .option-title {
             font-weight: 600;
-            color: #1e40af;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+            font-size: 0.9rem;
+        }
+
+        .option-description {
+            font-size: 0.8rem;
+            color: var(--gray);
         }
 
         select {
-            padding: 0.75rem;
+            padding: 1rem;
             margin: 0.5rem 0;
             width: 100%;
-            border: 2px solid #e5e7eb;
-            border-radius: 0.5rem;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius);
             font-size: 0.95rem;
-            background-color: #f9fafb;
-            transition: border-color 0.2s ease;
+            background-color: var(--light);
+            transition: var(--transition);
             -webkit-appearance: none;
             -moz-appearance: none;
             appearance: none;
-            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2212%22%20height%3D%227%22%20viewBox%3D%220%200%2012%207%22%3E%3Cpath%20d%3D%22M1%201L6%206L11%201%22%20stroke%3D%22%236b7280%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E');
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20width%3D%2216%22%20height%3D%2210%22%20viewBox%3D%220%200%2016%2010%22%3E%3Cpath%20d%3D%22M1%201L8%208L15%201%22%20stroke%3D%22%2364748b%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/svg%3E');
             background-repeat: no-repeat;
-            background-position: right 0.75rem center;
-            background-size: 12px;
+            background-position: right 1rem center;
+            background-size: 16px;
         }
 
         select:focus {
-            border-color: #4f46e5;
+            border-color: var(--primary);
             outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
         }
 
         #customSizeInput {
-            padding: 0.75rem;
+            padding: 1rem;
             margin: 0.5rem 0;
             width: 100%;
-            border: 2px solid #e5e7eb;
-            border-radius: 0.5rem;
+            border: 2px solid var(--gray-light);
+            border-radius: var(--radius);
             font-size: 0.95rem;
             display: none;
-            transition: border-color 0.2s ease;
+            transition: var(--transition);
+            background-color: var(--light);
         }
 
         #customSizeInput:focus {
-            border-color: #4f46e5;
+            border-color: var(--primary);
             outline: none;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1.5rem 0;
         }
 
         button {
-            padding: 0.75rem;
-            background-color: #007bff;
+            padding: 1rem;
             color: white;
             border: none;
-            border-radius: 0.5rem;
+            border-radius: var(--radius);
             cursor: pointer;
             font-size: 0.95rem;
             font-weight: 600;
-            margin: 0.5rem 0;
-            width: 100%;
-            transition: transform 0.2s ease, background-color 0.2s ease;
+            transition: var(--transition);
             touch-action: manipulation;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         button:hover {
             transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         button:active {
@@ -142,121 +258,263 @@
         }
 
         #generateBtn {
-            background-color: #4f46e5;
+            background-color: var(--primary);
         }
 
         #generateBtn:hover {
-            background-color: #4338ca;
+            background-color: var(--primary-dark);
         }
 
         #downloadAllBtn {
-            background-color: #10b981;
+            background-color: var(--success);
             display: none;
         }
 
         #downloadAllBtn:hover {
-            background-color: #059669;
+            background-color: var(--success-dark);
         }
 
         #switchUiBtn {
-            background-color: #8b5cf6;
+            background-color: var(--secondary);
+            grid-column: span 2;
         }
 
         #switchUiBtn:hover {
             background-color: #7c3aed;
         }
 
+        .loading {
+            display: none;
+            margin: 10px 0;
+            color: var(--primary);
+            font-weight: 600;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .progress {
+            margin: 10px 0;
+            font-size: 0.9rem;
+            color: var(--gray);
+            display: none;
+        }
+
+        .qr-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
         #qrCodeContainer {
-            margin-top: 1rem;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             gap: 1rem;
             justify-items: center;
         }
 
         .qrCodeItem {
             text-align: center;
-            background-color: #fff;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
+            background-color: var(--white);
+            padding: 1rem;
+            border-radius: var(--radius);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            transition: transform 0.2s ease;
+            transition: var(--transition);
+            border: 1px solid var(--gray-light);
         }
 
         .qrCodeItem:hover {
-            transform: scale(1.05);
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
         }
 
         .qrCodeItem img {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             object-fit: contain;
+            border-radius: 8px;
         }
 
         .qrCodeItem p {
-            margin: 0.5rem 0 0;
+            margin: 0.75rem 0 0;
             word-break: break-all;
-            max-width: 100px;
+            max-width: 120px;
             font-size: 0.8rem;
-            color: #4b5563;
+            color: var(--gray);
+            line-height: 1.4;
         }
 
-        .loading {
-            display: none;
-            margin: 10px 0;
-            color: #4f46e5;
-            font-weight: 600;
+        .empty-state {
+            padding: 2rem;
+            text-align: center;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--gray-light);
+        }
+
+        .shortcut-hint {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            .options-group {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+
+            #switchUiBtn {
+                grid-column: span 1;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            #qrCodeContainer {
+                grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            }
+
+            .qrCodeItem img {
+                width: 100px;
+                height: 100px;
+            }
         }
 
         @media (max-width: 360px) {
             .container {
-                padding: 1rem;
+                padding: 1.25rem;
             }
 
             h1 {
-                font-size: 1.2rem;
+                font-size: 1.3rem;
             }
 
             textarea, select, #customSizeInput, button {
                 font-size: 0.9rem;
-            }
-
-            .size-label {
-                font-size: 0.9rem;
-            }
-
-            .qrCodeItem {
-                padding: 0.4rem;
-            }
-
-            .qrCodeItem p {
-                font-size: 0.75rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>QR Code Generator</h1>
-        <textarea id="userInput" placeholder="Enter links (one per line)" required></textarea>
-        <div class="size-label">Size</div>
-        <select id="sizeSelect" onchange="toggleCustomSizeInput()">
-            <option value="100x100">100x100</option>
-            <option value="300x300">300x300</option>
-            <option value="500x500" selected>500x500</option>
-            <option value="900x900">900x900</option>
-            <option value="other">Other</option>
-        </select>
-        <input type="number" id="customSizeInput" placeholder="Enter custom size (10-1000)" min="10" max="1000">
-        <button id="generateBtn" onclick="generateQRCodes()">Generate QR Codes</button>
-        <button id="downloadAllBtn" onclick="downloadAllQRCodes()">Download All QR Codes (ZIP)</button>
-        <div class="loading" id="loadingIndicator">Preparing download...</div>
-        <button id="switchUiBtn" onclick="window.location.href='https://lamkh1219.github.io/qr_code_generator/index_v2.html'">Switch to New UI</button>
-        <div id="qrCodeContainer"></div>
+        <div class="header">
+            <i class="fas fa-qrcode"></i>
+            <h1>QR Code Generator</h1>
+        </div>
+        
+        <p class="subtitle">Generate multiple QR codes from URLs quickly and easily</p>
+        
+        <div class="input-group">
+            <div class="input-label">
+                <i class="fas fa-link"></i>
+                <span>URLs (one per line)</span>
+            </div>
+            <textarea id="userInput" placeholder="https://example.com&#10;https://another-example.com" required></textarea>
+            <p class="shortcut-hint">Press Shift+Enter to generate QR codes</p>
+        </div>
+        
+        <div class="options-group">
+            <div class="option-card active" onclick="selectOption('size')">
+                <div class="option-title">Size Options</div>
+                <div class="option-description">Choose from preset sizes or set custom dimensions</div>
+            </div>
+            <div class="option-card" onclick="selectOption('advanced')">
+                <div class="option-title">Advanced Options</div>
+                <div class="option-description">Color, format and other settings (coming soon)</div>
+            </div>
+        </div>
+        
+        <div class="input-group" id="sizeOptions">
+            <div class="input-label">
+                <i class="fas fa-expand-alt"></i>
+                <span>QR Code Size</span>
+            </div>
+            <select id="sizeSelect" onchange="toggleCustomSizeInput()">
+                <option value="100x100">Small (100x100)</option>
+                <option value="300x300">Medium (300x300)</option>
+                <option value="500x500" selected>Large (500x500)</option>
+                <option value="900x900">Extra Large (900x900)</option>
+                <option value="other">Custom Size</option>
+            </select>
+            <input type="number" id="customSizeInput" placeholder="Enter custom size (10-1000)" min="10" max="1000">
+        </div>
+        
+        <div class="button-group">
+            <button id="generateBtn" onclick="generateQRCodes()">
+                <i class="fas fa-bolt"></i>
+                Generate QR Codes
+            </button>
+            <button id="downloadAllBtn" onclick="downloadAllQRCodes()">
+                <i class="fas fa-download"></i>
+                Download All (ZIP)
+            </button>
+            <button id="switchUiBtn" onclick="window.location.href='https://lamkh1219.github.io/qr_code_generator/index_v2.html'">
+                <i class="fas fa-exchange-alt"></i>
+                Switch to New UI
+            </button>
+        </div>
+        
+        <div class="loading" id="loadingIndicator">
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>Preparing download...</span>
+        </div>
+        <div class="progress" id="progressIndicator"></div>
+        
+        <div class="qr-section">
+            <div class="section-title">
+                <i class="fas fa-qrcode"></i>
+                <span>Generated QR Codes</span>
+            </div>
+            <div id="qrCodeContainer">
+                <div class="empty-state">
+                    <i class="fas fa-qrcode"></i>
+                    <p>Your QR codes will appear here</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         let currentQRCodeUrls = [];
+        
+        function selectOption(option) {
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            
+            if (option === 'size') {
+                document.querySelector('.option-card').classList.add('active');
+                document.getElementById('sizeOptions').style.display = 'block';
+            } else {
+                document.querySelectorAll('.option-card')[1].classList.add('active');
+                document.getElementById('sizeOptions').style.display = 'none';
+                alert('Advanced options coming soon!');
+            }
+        }
         
         function toggleCustomSizeInput() {
             const sizeSelect = document.getElementById('sizeSelect');
@@ -264,51 +522,113 @@
             customSizeInput.style.display = sizeSelect.value === 'other' ? 'block' : 'none';
         }
 
-        function generateQRCodes() {
-            const userInput = document.getElementById('userInput').value;
-            const sizeSelect = document.getElementById('sizeSelect').value;
-            const customSizeInput = document.getElementById('customSizeInput').value;
-            const links = userInput.split('\n').map(link => link.trim()).filter(link => link !== '');
-            const qrCodeContainer = document.getElementById('qrCodeContainer');
-            const downloadAllBtn = document.getElementById('downloadAllBtn');
+        // 輸入驗證函數
+        function validateInput(links) {
+            const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+            const validLinks = [];
+            const invalidLinks = [];
             
-            if (links.length === 0) {
-                alert('Please enter at least one valid link');
-                return;
-            }
-
-            let size = sizeSelect;
-            if (sizeSelect === 'other') {
-                const customSize = parseInt(customSizeInput);
-                if (isNaN(customSize) || customSize < 10 || customSize > 1000) {
-                    alert('Please enter a valid custom size between 10 and 1000');
-                    return;
-                }
-                size = `${customSize}x${customSize}`;
-            }
-
-            qrCodeContainer.innerHTML = '';
-            currentQRCodeUrls = [];
-
             links.forEach(link => {
-                const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(link)}&size=${size}&margin=1`;
-                const qrCodeItem = document.createElement('div');
-                qrCodeItem.className = 'qrCodeItem';
-                
-                // Create a filename for the QR code (replace special characters)
-                const filename = link.replace(/^https?:\/\//, '')
-                                    .replace(/[^a-zA-Z0-9]/g, '_')
-                                    .substring(0, 20) || 'qrcode';
-                
-                qrCodeItem.innerHTML = `<img src="${apiUrl}" alt="QR Code"><p>${link}</p>`;
-                qrCodeContainer.appendChild(qrCodeItem);
-                
-                // Store the URL and filename for later download
-                currentQRCodeUrls.push({ url: apiUrl, filename: `${filename}.png` });
+                if (urlPattern.test(link)) {
+                    validLinks.push(link);
+                } else {
+                    invalidLinks.push(link);
+                }
             });
             
-            // Show the download all button
-            downloadAllBtn.style.display = 'block';
+            return { validLinks, invalidLinks };
+        }
+
+        // 生成檔案名稱
+        function generateFilename(link) {
+            try {
+                const url = new URL(link);
+                let filename = url.hostname.replace(/^www\./, '');
+                if (url.pathname !== '/') {
+                    filename += url.pathname.replace(/[^a-zA-Z0-9]/g, '_');
+                }
+                return filename.substring(0, 30) || 'qrcode';
+            } catch {
+                // 如果URL解析失敗，使用備用方法
+                return link.replace(/^https?:\/\//, '')
+                          .replace(/[^a-zA-Z0-9]/g, '_')
+                          .substring(0, 20) || 'qrcode';
+            }
+        }
+
+        function generateQRCodes() {
+            try {
+                const userInput = document.getElementById('userInput').value;
+                const sizeSelect = document.getElementById('sizeSelect').value;
+                const customSizeInput = document.getElementById('customSizeInput').value;
+                const links = userInput.split('\n').map(link => link.trim()).filter(link => link !== '');
+                const qrCodeContainer = document.getElementById('qrCodeContainer');
+                const downloadAllBtn = document.getElementById('downloadAllBtn');
+                
+                if (links.length === 0) {
+                    alert('Please enter at least one valid link');
+                    return;
+                }
+
+                // 驗證輸入
+                const { validLinks, invalidLinks } = validateInput(links);
+                
+                if (validLinks.length === 0) {
+                    alert('Please enter at least one valid URL');
+                    return;
+                }
+                
+                if (invalidLinks.length > 0) {
+                    alert(`The following links are invalid and will be skipped:\n${invalidLinks.join('\n')}`);
+                }
+
+                let size = sizeSelect;
+                if (sizeSelect === 'other') {
+                    const customSize = parseInt(customSizeInput);
+                    if (isNaN(customSize) || customSize < 10 || customSize > 1000) {
+                        alert('Please enter a valid custom size between 10 and 1000');
+                        return;
+                    }
+                    size = `${customSize}x${customSize}`;
+                }
+
+                qrCodeContainer.innerHTML = '';
+                currentQRCodeUrls = [];
+
+                if (validLinks.length === 0) {
+                    qrCodeContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>No valid URLs found. Please check your input.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                validLinks.forEach(link => {
+                    const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(link)}&size=${size}&margin=1`;
+                    const qrCodeItem = document.createElement('div');
+                    qrCodeItem.className = 'qrCodeItem';
+                    
+                    // 使用改進的檔案名稱生成
+                    const filename = generateFilename(link) + '.png';
+                    
+                    qrCodeItem.innerHTML = `
+                        <img src="${apiUrl}" alt="QR Code for ${link}">
+                        <p>${link}</p>
+                    `;
+                    qrCodeContainer.appendChild(qrCodeItem);
+                    
+                    // 儲存URL和檔案名稱供後續下載使用
+                    currentQRCodeUrls.push({ url: apiUrl, filename: filename });
+                });
+                
+                // 顯示下載全部按鈕
+                downloadAllBtn.style.display = 'flex';
+            } catch (error) {
+                console.error('生成 QR Code 時出錯:', error);
+                alert('生成 QR Code 時發生錯誤，請稍後再試');
+            }
         }
 
         async function downloadAllQRCodes() {
@@ -318,48 +638,64 @@
             }
             
             const loadingIndicator = document.getElementById('loadingIndicator');
+            const progressIndicator = document.getElementById('progressIndicator');
             const downloadAllBtn = document.getElementById('downloadAllBtn');
             
-            // Show loading indicator
-            loadingIndicator.style.display = 'block';
+            // 顯示載入指示器
+            loadingIndicator.style.display = 'flex';
+            progressIndicator.style.display = 'block';
             downloadAllBtn.disabled = true;
             
             try {
                 const zip = new JSZip();
                 const folder = zip.folder("qr_codes");
                 
-                // Fetch each QR code and add to zip
+                // 獲取每個QR碼並添加到zip
                 for (let i = 0; i < currentQRCodeUrls.length; i++) {
                     const { url, filename } = currentQRCodeUrls[i];
                     
+                    // 更新進度
+                    progressIndicator.textContent = `Processing: ${i + 1}/${currentQRCodeUrls.length}`;
+                    
                     try {
                         const response = await fetch(url);
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
                         const blob = await response.blob();
                         folder.file(filename, blob);
                     } catch (error) {
                         console.error(`Failed to fetch QR code ${i+1}:`, error);
+                        // 繼續處理其他QR碼，不中斷整個過程
                     }
                 }
                 
-                // Generate zip file
+                // 生成zip檔案
                 const content = await zip.generateAsync({ type: "blob" });
                 
-                // Download the zip file
+                // 下載zip檔案
                 saveAs(content, "qr_codes.zip");
+                
+                // 顯示完成訊息
+                progressIndicator.textContent = 'Download completed!';
             } catch (error) {
                 console.error('Error creating ZIP file:', error);
                 alert('Failed to create download. Please try again.');
+                progressIndicator.textContent = 'Error occurred during download';
             } finally {
-                // Hide loading indicator
-                loadingIndicator.style.display = 'none';
-                downloadAllBtn.disabled = false;
+                // 隱藏載入指示器
+                setTimeout(() => {
+                    loadingIndicator.style.display = 'none';
+                    progressIndicator.style.display = 'none';
+                    downloadAllBtn.disabled = false;
+                }, 2000);
             }
         }
 
-        // Add Shift + Enter to generate QR codes
+        // 添加 Shift + Enter 來生成 QR 碼
         document.getElementById('userInput').addEventListener('keydown', function(event) {
             if (event.shiftKey && event.key === 'Enter') {
-                event.preventDefault(); // Prevent adding a new line
+                event.preventDefault(); // 防止添加新行
                 generateQRCodes();
             }
         });
