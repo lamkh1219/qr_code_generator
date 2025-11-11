@@ -13,6 +13,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="https://lamkh1219.github.io/qr_code_generator/images/favicon/site.webmanifest" />
+
     <script src="./qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
@@ -264,7 +265,7 @@
             let generatedCodes = []; 
             let generateTimeout; 
             
-            // *** 多國語言物件 (🌐 已移除) ***
+            // *** 多國語言物件 (已移除 {size}x{size}) ***
             const translations = {
                 'en': {
                     appTitle: 'Multi-Link QR Code Generator',
@@ -274,8 +275,9 @@
                     applyColorBtnText: '🎨 Apply',
                     placeholderText: 'Please enter URLs above',
                     loadingText: 'Generating and packing ZIP file, please wait...',
-                    downloadBtnTextMulti: '📥 Download All {count} QR Codes ({size}x{size}, ZIP)',
-                    downloadBtnTextSingle: '📥 Download QR Code ({size}x{size})',
+                    // 簡化下載按鈕文字
+                    downloadBtnTextMulti: '📥 Download All {count} QR Codes (ZIP)',
+                    downloadBtnTextSingle: '📥 Download QR Code', 
                     size100: 'Small (100x100)',
                     size150: 'Medium (150x150)',
                     size250: 'Large (250x250)',
@@ -291,8 +293,9 @@
                     applyColorBtnText: '🎨 確定',
                     placeholderText: '請在上方輸入網址',
                     loadingText: '正在生成並打包 ZIP 檔案，請稍候...',
-                    downloadBtnTextMulti: '📥 下載所有 {count} 個 QR Code ({size}x{size}, ZIP)',
-                    downloadBtnTextSingle: '📥 下載 QR Code ({size}x${size})',
+                    // 簡化下載按鈕文字
+                    downloadBtnTextMulti: '📥 下載所有 {count} 個 QR Code (ZIP)',
+                    downloadBtnTextSingle: '📥 下載 QR Code',
                     size100: '小 (100x100)',
                     size150: '中 (150x150)',
                     size250: '大 (250x250)',
@@ -314,6 +317,12 @@
                 document.getElementById('colorLabel').textContent = lang.colorLabel;
                 document.getElementById('applyColorBtnText').textContent = lang.applyColorBtnText;
                 
+                // 更新選項文字
+                document.getElementById('size100').textContent = lang.size100;
+                document.getElementById('size150').textContent = lang.size150;
+                document.getElementById('size250').textContent = lang.size250;
+                document.getElementById('size400').textContent = lang.size400;
+
                 // 必須重新呼叫 generateQRCodes 來更新 placeholder 和下載按鈕的文字
                 generateQRCodes(); 
             }
@@ -333,7 +342,7 @@
                 return clean.replace(/[^a-zA-Z0-9-]/g, '_').substring(0, 50);
             }
 
-            // --- 核心功能 ---
+            // --- 核心功能 (保持不變) ---
             function createSingleQRCode(url, finalSize, finalColor) {
                 const displaySize = 100; 
 
@@ -357,7 +366,7 @@
                 const label = document.createElement('div');
                 label.className = 'qrcode-label';
                 label.textContent = getCleanFilename(url);
-                itemDiv.appendChild(label);
+                    itemDiv.appendChild(label);
                 
                 qrcodeContainer.appendChild(itemDiv);
 
@@ -405,7 +414,6 @@
                 if (validUrls.length === 0) {
                     // 更新 placeholder 的文字
                     qrcodeContainer.innerHTML = `<p class="placeholder" id="placeholderText">${lang.placeholderText}</p>`;
-                    // 確保 loading 文字也更新
                     document.getElementById('loadingText').textContent = lang.loadingText; 
                     return;
                 }
@@ -420,17 +428,13 @@
                     
                     let buttonText;
                     if (validUrls.length > 1) {
-                        buttonText = lang.downloadBtnTextMulti
-                            .replace('{count}', validUrls.length)
-                            .replace('{size}', finalSize);
+                        // 使用簡化後的下載按鈕文字 (多個)
+                        buttonText = lang.downloadBtnTextMulti.replace('{count}', validUrls.length);
                     } else {
-                        // 處理下載按鈕文字中的 ${size}
-                        const downloadSingleText = lang.downloadBtnTextSingle;
-                        buttonText = downloadSingleText.replace(/\${size}/g, finalSize);
-
+                        // 使用簡化後的下載按鈕文字 (單個)
+                        buttonText = lang.downloadBtnTextSingle;
                     }
                     document.getElementById('downloadBtnText').textContent = buttonText;
-                    // 確保 loading 文字也更新
                     document.getElementById('loadingText').textContent = lang.loadingText; 
                 }, 300);
             }
