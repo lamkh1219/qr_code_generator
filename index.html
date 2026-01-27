@@ -21,16 +21,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <style>
-        /* --- 簡約時尚 UI 樣式 (保持不變) --- */
         :root {
-            --primary-color: #007bff; /* 主色調：時尚藍 */
-            --accent-color: #28a745; /* 強調色：下載綠 */
-            --background-light: #f7f9fc; /* 淺背景 */
-            --background-paper: #ffffff; /* 紙張白 */
-            --text-dark: #333; /* 深文字 */
-            --text-muted: #888; /* 柔和文字 */
-            --border-light: #ddd; /* 淺邊框 */
-            --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.08); /* 輕微陰影 */
+            --primary-color: #007bff;
+            --accent-color: #28a745;
+            --background-light: #f7f9fc;
+            --background-paper: #ffffff;
+            --text-dark: #333;
+            --text-muted: #888;
+            --border-light: #ddd;
+            --shadow-subtle: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
         
         body { 
@@ -66,8 +65,7 @@
             margin-bottom: 15px;
         }
         
-        /* 輸入框和選擇器的基礎樣式 */
-        #urlInput, #qrSize, #languageSelect {
+        #urlInput, #qrSize, #languageSelect, #borderWidth {
             border: 1px solid var(--border-light);
             border-radius: 8px;
             padding: 12px;
@@ -76,7 +74,6 @@
             font-size: 14px;
         }
 
-        /* 網址輸入框 */
         #urlInput { 
             width: 100%; 
             height: 150px; 
@@ -89,8 +86,7 @@
             outline: none; 
         }
 
-        /* 尺寸和顏色選擇器容器 */
-        .size-selector-container, .color-selector-container { 
+        .setting-row { 
             text-align: left; 
             margin-bottom: 20px; 
             display: flex;
@@ -99,23 +95,25 @@
             font-weight: 500;
         }
         
-        /* 尺寸下拉選單 */
         #qrSize {
             width: 50%;
             cursor: pointer;
             padding: 8px;
         }
+
+        #borderWidth {
+            width: 80px;
+            padding: 8px;
+            margin-left: 10px;
+        }
         
-        /* 語言選擇器 */
         #languageSelect {
              padding: 8px 12px;
              cursor: pointer;
         }
 
-        /* 顏色選擇器本身 */
         #qrColor {
             -webkit-appearance: none;
-            -moz-appearance: none;
             appearance: none;
             height: 40px; 
             border: 1px solid var(--border-light);
@@ -125,12 +123,9 @@
             background-color: transparent;
         }
 
-        /* 針對特定瀏覽器的顏色方塊 */
         #qrColor::-webkit-color-swatch-wrapper { padding: 0; }
         #qrColor::-webkit-color-swatch { border: none; border-radius: 6px; }
-        #qrColor::-moz-color-swatch { border: none; border-radius: 6px; }
         
-        /* 確認按鈕樣式 (應用於顏色確認) */
         #applyColorBtn {
             padding: 8px 12px;
             background-color: var(--primary-color); 
@@ -139,13 +134,12 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 14px;
-            transition: background-color 0.3s, transform 0.1s;
+            transition: background-color 0.3s;
         }
         #applyColorBtn:hover {
             background-color: #0056b3; 
         }
 
-        /* 下載按鈕樣式 */
         #downloadBtn { 
             width: 100%;
             padding: 15px 20px; 
@@ -160,18 +154,10 @@
             display: none; 
             transition: background-color 0.3s, transform 0.1s; 
         }
-        #downloadBtn:hover {
-            background-color: #1e8736;
-        }
-        #downloadBtn:active {
-            transform: scale(0.99);
-        }
-        #downloadBtn:disabled {
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
+        #downloadBtn:hover { background-color: #1e8736; }
+        #downloadBtn:active { transform: scale(0.99); }
+        #downloadBtn:disabled { cursor: not-allowed; opacity: 0.6; }
 
-        /* QR Code 顯示區域 */
         #qrcodeContainer { 
             display: flex; 
             flex-wrap: wrap; 
@@ -205,6 +191,12 @@
             font-weight: 500;
             display: none; 
         }
+
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
     </style>
 </head>
 <body>
@@ -220,9 +212,9 @@
         <h1 id="appTitle">Multi-Link QR Code Generator</h1>
         <p id="instructionText">Please enter the URLs below, one per line (separated by Enter):</p>
         
-        <textarea id="urlInput" placeholder="e.g.:&#10;https://www.google.com&#10;https://www.bing.com&#10;https://www.openai.com"></textarea>
+        <textarea id="urlInput" placeholder="e.g.:&#10;https://www.google.com&#10;https://www.bing.com"></textarea>
         
-        <div class="size-selector-container">
+        <div class="setting-row">
             <label id="sizeLabel" for="qrSize">QR Code Size (Pixels):</label>
             <select id="qrSize">
                 <option value="100" id="size100">Small (100x100)</option>
@@ -232,11 +224,20 @@
             </select>
         </div>
         
-        <div class="color-selector-container">
+        <div class="setting-row">
             <label id="colorLabel" for="qrColor">QR Code Color:</label>
             <div style="display: flex; gap: 10px; width: 50%;">
                 <input type="color" id="qrColor" value="#000000" style="flex-grow: 1;">
                 <button id="applyColorBtn" type="button"><span id="applyColorBtnText">🎨 Apply</span></button>
+            </div>
+        </div>
+
+        <div class="setting-row">
+            <label id="borderLabel" for="addBorder">Add Border (Padding):</label>
+            <div class="checkbox-container" style="width: 50%; justify-content: flex-end;">
+                <input type="checkbox" id="addBorder" checked>
+                <input type="number" id="borderWidth" value="20" min="0" max="200">
+                <span style="font-size: 14px;">px</span>
             </div>
         </div>
 
@@ -251,31 +252,30 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- 介面元素獲取 ---
             const urlInput = document.getElementById('urlInput');
             const qrSizeSelect = document.getElementById('qrSize');
             const qrColorInput = document.getElementById('qrColor'); 
             const applyColorBtn = document.getElementById('applyColorBtn');
+            const addBorderCheckbox = document.getElementById('addBorder');
+            const borderWidthInput = document.getElementById('borderWidth');
             const qrcodeContainer = document.getElementById('qrcodeContainer');
             const downloadBtn = document.getElementById('downloadBtn');
             const loadingDiv = document.getElementById('loading');
             const languageSelect = document.getElementById('languageSelect');
             
-            // --- 狀態變數 ---
             let generatedCodes = []; 
             let generateTimeout; 
             
-            // *** 多國語言物件 (已移除 {size}x{size}) ***
             const translations = {
                 'en': {
                     appTitle: 'Multi-Link QR Code Generator',
                     instructionText: 'Please enter the URLs below, one per line (separated by Enter):',
                     sizeLabel: 'QR Code Size (Pixels):',
                     colorLabel: 'QR Code Color:',
+                    borderLabel: 'Add Border (Padding):',
                     applyColorBtnText: '🎨 Apply',
                     placeholderText: 'Please enter URLs above',
                     loadingText: 'Generating and packing ZIP file, please wait...',
-                    // 簡化下載按鈕文字
                     downloadBtnTextMulti: '📥 Download All {count} QR Codes (ZIP)',
                     downloadBtnTextSingle: '📥 Download QR Code', 
                     size100: 'Small (100x100)',
@@ -290,10 +290,10 @@
                     instructionText: '請在下方輸入網址連結，每行一個 (以 Enter 相隔)：',
                     sizeLabel: 'QR Code 尺寸 (像素)：',
                     colorLabel: 'QR Code 顏色：',
+                    borderLabel: '加入外框 (留白)：',
                     applyColorBtnText: '🎨 確定',
                     placeholderText: '請在上方輸入網址',
                     loadingText: '正在生成並打包 ZIP 檔案，請稍候...',
-                    // 簡化下載按鈕文字
                     downloadBtnTextMulti: '📥 下載所有 {count} 個 QR Code (ZIP)',
                     downloadBtnTextSingle: '📥 下載 QR Code',
                     size100: '小 (100x100)',
@@ -305,29 +305,25 @@
                 }
             };
 
-            // --- 語言功能 ---
             function updateLanguage(langCode) {
                 const lang = translations[langCode];
                 if (!lang) return;
 
-                // 標題和說明文字
                 document.getElementById('appTitle').textContent = lang.appTitle;
                 document.getElementById('instructionText').textContent = lang.instructionText;
                 document.getElementById('sizeLabel').textContent = lang.sizeLabel;
                 document.getElementById('colorLabel').textContent = lang.colorLabel;
+                document.getElementById('borderLabel').textContent = lang.borderLabel;
                 document.getElementById('applyColorBtnText').textContent = lang.applyColorBtnText;
                 
-                // 更新選項文字
                 document.getElementById('size100').textContent = lang.size100;
                 document.getElementById('size150').textContent = lang.size150;
                 document.getElementById('size250').textContent = lang.size250;
                 document.getElementById('size400').textContent = lang.size400;
 
-                // 必須重新呼叫 generateQRCodes 來更新 placeholder 和下載按鈕的文字
                 generateQRCodes(); 
             }
             
-            // --- 工具函式 (Debounce) ---
             function debounce(func, delay) {
                 return function() {
                     const context = this;
@@ -342,17 +338,15 @@
                 return clean.replace(/[^a-zA-Z0-9-]/g, '_').substring(0, 50);
             }
 
-            // --- 核心功能 (保持不變) ---
             function createSingleQRCode(url, finalSize, finalColor) {
                 const displaySize = 100; 
-
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'qrcode-item';
                 
                 const qrDiv = document.createElement('div'); 
                 itemDiv.appendChild(qrDiv);
 
-                // 顯示用 (小尺寸)
+                // 畫面顯示用 (固定小尺寸)
                 new QRCode(qrDiv, {
                     text: url,         
                     width: displaySize,        
@@ -362,18 +356,15 @@
                     correctLevel : QRCode.CorrectLevel.H
                 });
 
-                // 標籤
                 const label = document.createElement('div');
                 label.className = 'qrcode-label';
                 label.textContent = getCleanFilename(url);
-                    itemDiv.appendChild(label);
-                
+                itemDiv.appendChild(label);
                 qrcodeContainer.appendChild(itemDiv);
 
-                // 下載用 (隱藏/目標尺寸)
+                // 下載用 (處理外框邏輯)
                 setTimeout(() => {
                     const tempDiv = document.createElement('div');
-
                     new QRCode(tempDiv, {
                         text: url,         
                         width: finalSize,        
@@ -384,16 +375,36 @@
                     });
 
                     setTimeout(() => {
-                        const tempCanvas = tempDiv.querySelector('canvas');
-                        if (tempCanvas) {
-                            const dataURL_download = tempCanvas.toDataURL('image/png');
-                            
+                        const qrCanvas = tempDiv.querySelector('canvas');
+                        if (qrCanvas) {
+                            let outputCanvas = qrCanvas;
+
+                            // 如果勾選了「加入外框」
+                            if (addBorderCheckbox.checked) {
+                                const padding = parseInt(borderWidthInput.value) || 0;
+                                const newSize = finalSize + (padding * 2);
+                                
+                                const borderCanvas = document.createElement('canvas');
+                                borderCanvas.width = newSize;
+                                borderCanvas.height = newSize;
+                                const ctx = borderCanvas.getContext('2d');
+
+                                // 填滿背景色 (白色)
+                                ctx.fillStyle = "#ffffff";
+                                ctx.fillRect(0, 0, newSize, newSize);
+
+                                // 將原本的 QR Code 畫在正中央
+                                ctx.drawImage(qrCanvas, padding, padding);
+                                outputCanvas = borderCanvas;
+                            }
+
+                            const dataURL_download = outputCanvas.toDataURL('image/png');
                             generatedCodes.push({
                                 filename: `QRCode_${getCleanFilename(url)}_${finalSize}x${finalSize}.png`,
                                 dataURL: dataURL_download
                             });
                         }
-                    }, 50); 
+                    }, 100); 
                 }, 50); 
             }
 
@@ -403,7 +414,6 @@
                 const currentLang = languageSelect.value;
                 const lang = translations[currentLang];
 
-                // 清理工作
                 qrcodeContainer.innerHTML = ''; 
                 downloadBtn.style.display = 'none';
                 generatedCodes = [];
@@ -412,9 +422,7 @@
                 const validUrls = urls.map(url => url.trim()).filter(url => url.length > 0);
                 
                 if (validUrls.length === 0) {
-                    // 更新 placeholder 的文字
                     qrcodeContainer.innerHTML = `<p class="placeholder" id="placeholderText">${lang.placeholderText}</p>`;
-                    document.getElementById('loadingText').textContent = lang.loadingText; 
                     return;
                 }
 
@@ -422,21 +430,13 @@
                     createSingleQRCode(url, finalSize, finalColor); 
                 });
                 
-                // 延遲顯示下載按鈕並更新文字
                 setTimeout(() => {
                     downloadBtn.style.display = 'block';
-                    
-                    let buttonText;
-                    if (validUrls.length > 1) {
-                        // 使用簡化後的下載按鈕文字 (多個)
-                        buttonText = lang.downloadBtnTextMulti.replace('{count}', validUrls.length);
-                    } else {
-                        // 使用簡化後的下載按鈕文字 (單個)
-                        buttonText = lang.downloadBtnTextSingle;
-                    }
+                    let buttonText = (validUrls.length > 1) 
+                        ? lang.downloadBtnTextMulti.replace('{count}', validUrls.length)
+                        : lang.downloadBtnTextSingle;
                     document.getElementById('downloadBtnText').textContent = buttonText;
-                    document.getElementById('loadingText').textContent = lang.loadingText; 
-                }, 300);
+                }, 500); // 稍微增加延遲以確保 Canvas 處理完成
             }
 
             async function downloadAllQRCodes() {
@@ -448,19 +448,16 @@
                     return;
                 }
 
-                // --- 步驟 1: 處理單個檔案直接下載 ---
                 if (generatedCodes.length === 1) {
                     const code = generatedCodes[0];
                     saveAs(code.dataURL, code.filename); 
                     return;
                 }
 
-                // --- 步驟 2: 處理多個檔案，打包成 ZIP ---
                 loadingDiv.style.display = 'block';
                 downloadBtn.disabled = true;
 
                 const zip = new JSZip();
-
                 generatedCodes.forEach(code => {
                     const base64Data = code.dataURL.split(',')[1];
                     zip.file(code.filename, base64Data, {base64: true});
@@ -469,34 +466,30 @@
                 zip.generateAsync({type:"blob"})
                     .then(function(content) {
                         saveAs(content, "QR_Codes_Bundle.zip"); 
-                        
                         loadingDiv.style.display = 'none';
                         downloadBtn.disabled = false;
                     })
                     .catch(e => {
                         alert(lang.alertZipFail);
-                        console.error(e);
                         loadingDiv.style.display = 'none';
                         downloadBtn.disabled = false;
                     });
             }
 
-
-            // --- 綁定事件 ---
             const debouncedGenerate = debounce(generateQRCodes, 300); 
             
             urlInput.addEventListener('input', debouncedGenerate);
             qrSizeSelect.addEventListener('change', generateQRCodes); 
             applyColorBtn.addEventListener('click', generateQRCodes); 
+            addBorderCheckbox.addEventListener('change', generateQRCodes);
+            borderWidthInput.addEventListener('input', debouncedGenerate);
             
-            // 語言切換事件
             languageSelect.addEventListener('change', function() {
                 updateLanguage(this.value);
             });
             
             downloadBtn.addEventListener('click', downloadAllQRCodes);
 
-            // 首次載入：設定預設語言為英文，並執行一次生成
             languageSelect.value = 'en'; 
             updateLanguage('en'); 
         });
